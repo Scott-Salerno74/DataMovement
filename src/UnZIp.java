@@ -55,17 +55,25 @@ public class UnZIp {
     public static void main(String[] args){
         double[] input = new double[size];
         for(int i =0; i < input.length; i++){
-            input[i] = (Math.random()*10);
+            input[i] = (Math.random());
         }
 
          System.out.println("Original Array initialized");
+         long serialStart = System.nanoTime();
         unZipGather(input);
+        long serialTotal = (System.nanoTime()-serialStart)/1_000_000;
+        System.out.println("Serial version Time:" + " "+serialTotal + " "+ "seconds");
+
 //        for(double x : input){
 //            System.out.println(x+',');
 //        }
 //        System.out.println("Zipped pattern of the array:" +"\n");
 //        unZipGather(input);
+        long concurrentStart = System.nanoTime();
         poolUnZip(input);
+        long concurrentTotal = (System.nanoTime()-concurrentStart)/1_000_000;
+        System.out.println("Serial version Time:" + " "+concurrentTotal+ " "+ "seconds");
+
 
     }
 

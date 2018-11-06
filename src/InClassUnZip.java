@@ -3,17 +3,28 @@ import java.util.concurrent.RecursiveAction;
 
 public class InClassUnZip {
     static final int Threshold = 10;
-    static final int size = 10;
+    static final int size = 1_000_001;
     static double[] out1;
     static double[] out2;
+    protected static  void unZipGather( double[] input) {
+
+        double[] output = new double[input.length];
+        double[] output2 = new double[input.length];
+        long start = System.nanoTime();
+        for (int i = 1; i < input.length; i = i + 2) {
+            //int y = index[i];
+            output[i] = input[i];
+
+        }
+    }
     public static void parallelUnZip(double[]input){
         int N = input.length;
         if(N%2 ==0 ){
-            double[] out1 = new double[N/2];
-            double[] out2 = new double[N/2];
+             out1 = new double[N/2];
+             out2 = new double[N/2];
         } else {
-            double[] out1 = new double[(N/2)+1];
-            double[] out2 = new double[N/2];
+             out1 = new double[(N/2)+1];
+             out2 = new double[N/2];
         }
         ForkJoinPool pool = new ForkJoinPool(Runtime.getRuntime().availableProcessors());
         long start = System.nanoTime();
@@ -42,8 +53,21 @@ public class InClassUnZip {
         for(int i =0; i < input.length; i++){
             input[i] = (Math.random()*10);
         }
+        System.out.println("Original Array initialized");
+        long serialStart = System.nanoTime();
+        unZipGather(input);
+        long serialTotal = (System.nanoTime()-serialStart)/1_000_000;
+        System.out.println("Serial version Time:" + " "+serialTotal + " "+ "seconds");
+
+//        for(double x : input){
+//            System.out.println(x+',');
+//        }
+//        System.out.println("Zipped pattern of the array:" +"\n");
+//        unZipGather(input);
+        long concurrentStart = System.nanoTime();
         parallelUnZip(input);
-        System.out.println(isUnZipCorrect(input,out1,out2));
+        long concurrentTotal = (System.nanoTime()-concurrentStart)/1_000_000;
+        System.out.println("Serial version Time:" + " "+concurrentTotal+ " "+ "seconds");
 
     }
     public static class RecursiveUnZip extends RecursiveAction {
