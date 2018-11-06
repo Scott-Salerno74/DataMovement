@@ -2,8 +2,9 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveAction;
 
 public class InClassUnZip {
-    static final int Threshold = 10;
-    static final int size = 1_000_001;
+
+    static final int size = 25_000_001;
+    static final int Threshold = size/256 ;
     static double[] out1;
     static double[] out2;
     protected static  void unZipGather( double[] input) {
@@ -67,7 +68,8 @@ public class InClassUnZip {
         long concurrentStart = System.nanoTime();
         parallelUnZip(input);
         long concurrentTotal = (System.nanoTime()-concurrentStart)/1_000_000;
-        System.out.println("Serial version Time:" + " "+concurrentTotal+ " "+ "seconds");
+        System.out.println("Concurrent version Time:" + " "+concurrentTotal+ " "+ "seconds");
+         System.out.println(isUnZipCorrect(input,out1,out2));
 
     }
     public static class RecursiveUnZip extends RecursiveAction {
@@ -85,7 +87,7 @@ public class InClassUnZip {
         }
         @Override
         protected void compute() {
-            if((end-start) < Threshold){
+            if((end-start) > Threshold){
                 for( int i = start; i < end; i++){
                     if(i%2 ==0){
                         out1[i/2] = input[i];
@@ -96,7 +98,7 @@ public class InClassUnZip {
                 }
 
             }else{
-                int middle = (start-end)/2;
+                int middle = (start+end)/2;
                 RecursiveUnZip unzipLeft = new RecursiveUnZip(start, middle, input, out1, out2);
                 unzipLeft.fork();
                 RecursiveUnZip unzipRight = new RecursiveUnZip(middle,end,input,out1,out2);
