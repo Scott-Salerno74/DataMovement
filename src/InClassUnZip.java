@@ -3,7 +3,7 @@ import java.util.concurrent.RecursiveAction;
 
 public class InClassUnZip {
 
-    static final int size = 25_000_001;
+    static final int size = 31_000_001;
     static final int Threshold = size/256 ;
     static double[] out1;
     static double[] out2;
